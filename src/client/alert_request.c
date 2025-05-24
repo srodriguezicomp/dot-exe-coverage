@@ -4,6 +4,7 @@
 #include <client_utils.h>
 #include <string.h>
 #include <stdlib.h>
+// Comentario
 
 void send_alert_header(){
     printf("\n--- SEND ALERT ---\n");
