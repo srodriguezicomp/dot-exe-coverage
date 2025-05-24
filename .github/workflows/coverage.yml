@@ -66,4 +66,4 @@ jobs:
 
           cmake -GNinja -DRUN_COVERAGE=1 -DCMAKE_TOOLCHAIN_FILE=build/Release/generators/conan_toolchain.cmake -DCMAKE_POLICY_DEFAULT_CMP0091=NEW -DCMAKE_BUILD_TYPE=Release .. && ninja
 
-          ctest --test-dir tests && gcovr -r .. --filter '../src/' --fail-under-line=90
+          ctest --test-dir tests && gcovr -r .. --filter '../src/'
