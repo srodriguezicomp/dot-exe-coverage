@@ -15,6 +15,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Cache Conan dependencies
+      - name: Cache Conan
+        uses: actions/cache@v3
+        with:
+          path: ~/.conan
+          key: ${{ runner.os }}-conan-${{ hashFiles('conanfile.*') }}
+          restore-keys: |
+            ${{ runner.os }}-conan-
+
+      # Cache pip dependencies
+      - name: Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       # Install dependencies
       - name: Install dependencies
         run: |
@@ -26,26 +44,4 @@ jobs:
 
       # Run coverage
       - name: Run coverage
-        run: |
-          echo "🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨"
-
-          if [ -d "./build" ]; then
-              echo "-> 🚮 Removing old build directory..."
-              rm -rf ./build/*
-          else
-              echo "-> 👷 Creating build directory..."
-              mkdir build
-          fi
-
-          echo "🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧"
-
-          echo "-> 📦 Installing Conan dependencies..."
-          conan install . --output-folder=build --build=missing
-
-          echo "-> 💻 Compiling project and 📝 building..."
-
-          cd build
-
-          cmake -GNinja -DRUN_COVERAGE=1 -DCMAKE_TOOLCHAIN_FILE=build/Release/generators/conan_toolchain.cmake -DCMAKE_POLICY_DEFAULT_CMP0091=NEW -DCMAKE_BUILD_TYPE=Release .. && ninja
-
-          ctest --test-dir tests && gcovr -r ../src/ --filter '../src/' --fail-under-line=90
+        run: ./runlab.sh
