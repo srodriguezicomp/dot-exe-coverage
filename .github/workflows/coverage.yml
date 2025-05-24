@@ -40,14 +40,6 @@ jobs:
           sudo apt-get install -y ninja-build cmake python3-pip lcov
           pip3 install conan
           pip3 install gcovr
-          
-      - name: Detect Conan Profile
-        run: |
-          if conan profile show default > /dev/null 2>&1; then
-              echo "Default profile already exists. Skipping detection."
-          else
-              conan profile detect
-          fi
 
       # Run coverage
       - name: Run coverage
