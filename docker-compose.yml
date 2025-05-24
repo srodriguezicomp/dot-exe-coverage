@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: DHLDB
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - dhl_data:/data/db
+      - ./scripts/init-db.js:/docker-entrypoint-initdb.d/init-db.js:ro
+    environment:
+      MONGO_INITDB_DATABASE: dhl_db
+    networks:
+      - dhl_network
+
+volumes:
+  dhl_data:
+
+networks:
+  dhl_network:
+    driver: bridge

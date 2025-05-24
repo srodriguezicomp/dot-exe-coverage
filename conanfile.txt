@@ -1,0 +1,14 @@
+[requires]
+unity/2.6.0
+gtest/1.16.0
+libuv/1.49.2
+mongo-cxx-driver/3.11.0
+cryptopp/8.9.0
+cjson/1.7.18
+
+[generators]
+CMakeDeps
+CMakeToolchain
+
+[layout]
+cmake_layout

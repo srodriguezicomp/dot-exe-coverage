@@ -1,0 +1,51 @@
+name: Coverage Analysis
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build cmake python3-pip lcov
+          pip3 install conan
+          pip3 install gcovr
+          conan profile detect
+
+      # Run coverage
+      - name: Run coverage
+        run: |
+          echo "🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨"
+
+          if [ -d "./build" ]; then
+              echo "-> 🚮 Removing old build directory..."
+              rm -rf ./build/*
+          else
+              echo "-> 👷 Creating build directory..."
+              mkdir build
+          fi
+
+          echo "🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧"
+
+          echo "-> 📦 Installing Conan dependencies..."
+          conan install . --output-folder=build --build=missing
+
+          echo "-> 💻 Compiling project and 📝 building..."
+
+          cd build
+
+          cmake -GNinja -DRUN_COVERAGE=1 -DCMAKE_TOOLCHAIN_FILE=build/Release/generators/conan_toolchain.cmake -DCMAKE_POLICY_DEFAULT_CMP0091=NEW -DCMAKE_BUILD_TYPE=Release .. && ninja
+
+          ctest --test-dir tests && gcovr -r ../src/ --filter '../src/' --fail-under-line=90

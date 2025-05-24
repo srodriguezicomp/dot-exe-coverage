@@ -1,0 +1,33 @@
+FROM ubuntu:22.04
+
+# Install necessary packages including Conan
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    clangd \
+    cmake \
+    ninja-build \
+    gcovr \
+    # sqlite3 \
+    # libsqlite3-dev \
+    python3-pip \
+    git \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Install Conan
+RUN pip3 install conan
+
+# Set working directory
+WORKDIR /dot-exe
+
+# Copy all project files
+COPY . .
+
+RUN rm -rf build && mkdir -p build
+RUN conan profile detect
+RUN conan install . --output-folder=build --build=missing
+RUN cmake -S . -B build -GNinja -DRUN_COVERAGE=1 -DCMAKE_TOOLCHAIN_FILE=build/Release/generators/conan_toolchain.cmake -DCMAKE_POLICY_DEFAULT_CMP0091=NEW -DCMAKE_BUILD_TYPE=Release
+RUN ninja -C build
+
+EXPOSE 8080
