@@ -1,5 +1,4 @@
 [requires]
-hello-conan/0.0.1.cci.20241029
 unity/2.6.0
 gtest/1.16.0
 libuv/1.49.2
