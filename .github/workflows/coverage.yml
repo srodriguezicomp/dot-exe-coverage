@@ -65,4 +65,8 @@ jobs:
 
           cmake -GNinja -DRUN_COVERAGE=1 -DCMAKE_TOOLCHAIN_FILE=build/Release/generators/conan_toolchain.cmake -DCMAKE_POLICY_DEFAULT_CMP0091=NEW -DCMAKE_BUILD_TYPE=Release .. && ninja
 
-          ctest --test-dir tests && gcovr -r .. --filter '../src/'
+      # Run tests and coverage
+      - name: Run tests and coverage
+        run: |
+          echo "Running tests and generating coverage report..."
+          ctest --test-dir tests && gcovr -r .. --filter '../src/' && echo "Coverage report generated successfully."
