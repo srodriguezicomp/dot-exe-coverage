@@ -69,4 +69,5 @@ jobs:
       - name: Run tests and coverage
         run: |
           echo "Running tests and generating coverage report..."
+          cd build
           ctest --test-dir tests && gcovr -r .. --filter '../src/' && echo "Coverage report generated successfully."
