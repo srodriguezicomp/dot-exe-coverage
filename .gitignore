@@ -1,0 +1,43 @@
+# Compiled object files
+*.o
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Other
+.vscode/
+# Build folder
+build/
+
+# Compiled libraries
+*.a
+*.so
+
+# Disable for now
+*.cmake
+
+# Build directory
+/build/
+
+# External directoy
+/external/
+
+# Dependency files
+*.d
+
+# Editor/IDE specific files
+.vscode/
+.idea/
+
+# Dont track sonnar files
+.scannerwork/
+
+Scan.sh
+
+# CMake user-specific presets
+CMakeUserPresets.json
+
+# Coverage files
+/coverage

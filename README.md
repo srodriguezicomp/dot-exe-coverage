@@ -1,2 +1,1 @@
-# dot-exe-coverage
-Dot exe coverage
+# dot-exe

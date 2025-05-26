@@ -1,0 +1,1 @@
+docker run --rm -it --name server-container --network custom-network server-image

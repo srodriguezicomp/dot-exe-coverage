@@ -1,0 +1,73 @@
+name: Coverage Analysis
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Cache Conan dependencies
+      - name: Cache Conan
+        uses: actions/cache@v3
+        with:
+          path: ~/.conan2
+          key: ${{ runner.os }}-conan-${{ hashFiles('conanfile.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-conan-
+
+      # Cache pip dependencies
+      - name: Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build cmake python3-pip lcov
+          pip3 install conan
+          pip3 install gcovr
+
+      # Run build
+      - name: Run build
+        run: |
+          echo "🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨🔨"
+
+          if [ -d "./build" ]; then
+              echo "-> 🚮 Removing old build directory..."
+              rm -rf ./build/*
+          else
+              echo "-> 👷 Creating build directory..."
+              mkdir build
+          fi
+
+          echo "🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧"
+
+          echo "-> 📦 Installing Conan dependencies..."
+          conan install . --output-folder=build --build=missing
+
+          echo "-> 💻 Compiling project and 📝 building..."
+
+          cd build
+
+          cmake -GNinja -DRUN_COVERAGE=1 -DCMAKE_TOOLCHAIN_FILE=build/Release/generators/conan_toolchain.cmake -DCMAKE_POLICY_DEFAULT_CMP0091=NEW -DCMAKE_BUILD_TYPE=Release .. && ninja
+
+      # Run tests and coverage
+      - name: Run tests and coverage
+        run: |
+          echo "Running tests and generating coverage report..."
+          cd build
+          ctest --test-dir tests && gcovr -r .. --filter '../src/' && echo "Coverage report generated successfully."

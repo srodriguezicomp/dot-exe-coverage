@@ -1,0 +1,25 @@
+name: Cppcheck Analysis
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  cppcheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Configurar el repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Instalar cppcheck
+      - name: Install cppcheck
+        run: sudo apt-get update && sudo apt-get install -y cppcheck
+
+      # Ejecutar cppcheck
+      - name: Run cppcheck
+        run: |
+          cppcheck --enable=all --inconclusive --std=c++20 $(find . -name "*.c" -o -name "*.cpp")
